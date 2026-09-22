@@ -2015,15 +2015,10 @@ html&gt;body{padding:0}&lt;/style&gt;
       } catch {
         return;
       }
-      if (globalThis.navigator.userActivation?.isActive === true) {
-        const anchor = document.createElement("a");
-        anchor.href = href;
-        anchor.rel = "noopener noreferrer";
-        anchor.target = "_blank";
-        document.body.appendChild(anchor);
-        anchor.click();
-        anchor.remove();
-      }
+      // Mobile browsers commonly drop transient user activation before this
+      // MessageChannel callback runs, so opening a new tab is blocked. Navigate
+      // the top-level page instead; the browser back button returns to the map.
+      globalThis.location.assign(href);
       return;
     }
     if (data.type === "follow-up") {
